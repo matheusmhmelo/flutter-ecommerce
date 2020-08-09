@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "38702896039",
+    "firebase_url": "https://loja-virtual-226b6.firebaseio.com",
+    "project_id": "loja-virtual-226b6",
+    "storage_bucket": "loja-virtual-226b6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:38702896039:android:945e8e15681a7fec471c82",
+        "android_client_info": {
+          "package_name": "br.com.melo.loja_virtual"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "38702896039-l5lmsfo40lv61m17v9905ks29jafo4go.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3OLhQdCqRPz3Qtln3EHupigEvEU-aJbY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "38702896039-l5lmsfo40lv61m17v9905ks29jafo4go.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
