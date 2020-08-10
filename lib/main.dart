@@ -1,7 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:loja_virtual/models/product.dart';
+import 'package:loja_virtual/models/product_manager.dart';
 import 'package:loja_virtual/models/user_manager.dart';
 import 'package:loja_virtual/screens/base/base_screen.dart';
+import 'package:loja_virtual/screens/login/login_screen.dart';
+import 'package:loja_virtual/screens/product/product_screen.dart';
+import 'package:loja_virtual/screens/signup/signup_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -21,8 +26,17 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => UserManager(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => UserManager(),
+          lazy: false,
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ProductManager(),
+          lazy: false,
+        )
+      ],
       child: MaterialApp(
         title: 'Loja do Matheus',
         debugShowCheckedModeBanner: false,
@@ -34,7 +48,30 @@ class MyApp extends StatelessWidget {
           ),
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: BaseScreen(),
+        initialRoute: '/base',
+        onGenerateRoute: (settings){
+          switch(settings.name) {
+            case '/login':
+              return MaterialPageRoute(
+                  builder: (_) => LoginScreen()
+              );
+            case '/signup':
+              return MaterialPageRoute(
+                  builder: (_) => SignUpScreen()
+              );
+            case '/product':
+              return MaterialPageRoute(
+                  builder: (_) => ProductScreen(
+                    settings.arguments as Product
+                  )
+              );
+            case '/base':
+            default:
+              return MaterialPageRoute(
+                  builder: (_) => BaseScreen()
+              );
+          }
+        },
       ),
     );
   }
