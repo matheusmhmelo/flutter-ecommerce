@@ -1,0 +1,96 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:loja_virtual/models/cart_product.dart';
+import 'package:loja_virtual/models/product.dart';
+import 'package:loja_virtual/models/user.dart';
+import 'package:loja_virtual/models/user_manager.dart';
+
+class CartManager extends ChangeNotifier {
+
+  List<CartProduct> items = [];
+
+  User user;
+
+  num productsPrice = 0.0;
+
+  void updateUser(UserManager userManager) {
+    user = userManager.user;
+    items.clear();
+
+    if(user != null){
+      _loadCartItems();
+    }
+  }
+
+  Future<void> _loadCartItems() async {
+    final QuerySnapshot cartSnap = await user.cartRef.getDocuments();
+
+    items = cartSnap.documents.map(
+      (d) => CartProduct.fromDocument(d)..addListener(_onItemUpdated)
+    ).toList();
+  }
+
+  void addToCart(Product product) {
+    try {
+
+      final exist = items.firstWhere((p) => p.stackable(product));
+      exist.increment();
+
+    } catch (e) {
+
+      final cartProduct = CartProduct.fromProduct(product);
+      cartProduct.addListener(_onItemUpdated);
+      items.add(cartProduct);
+      user.cartRef.add(cartProduct.toCartItemMap())
+          .then((doc) => cartProduct.id = doc.documentID);
+      _onItemUpdated();
+
+    }
+    notifyListeners();
+  }
+
+  void removeOfCart(CartProduct cartProduct) {
+    items.removeWhere((p) => p.id == cartProduct.id);
+    user.cartRef.document(cartProduct.id).delete();
+
+    cartProduct.removeListener(_onItemUpdated);
+    notifyListeners();
+  }
+
+  void _onItemUpdated(){
+    productsPrice = 0.0;
+
+    for(int i = 0; i < items.length; i++) {
+      final cartProduct = items[i];
+
+      if(cartProduct.quantity == 0) {
+        removeOfCart(cartProduct);
+        i--;
+        continue;
+      }
+
+      productsPrice += cartProduct.totalPrice;
+
+      _updateCartProduct(cartProduct);
+    }
+
+    notifyListeners();
+  }
+
+  void _updateCartProduct(CartProduct cartProduct) {
+    if(cartProduct.id != null) {
+      user.cartRef.document(cartProduct.id)
+          .updateData(cartProduct.toCartItemMap());
+    }
+  }
+
+  bool get isCartValid {
+    for(final cartProduct in items){
+      if(!cartProduct.hasStock) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+}
