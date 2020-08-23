@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loja_virtual/models/product.dart';
 
 import 'components/images_form.dart';
+import 'components/sizes_form.dart';
 
 class EditProductScreen extends StatelessWidget {
 
@@ -93,6 +94,7 @@ class EditProductScreen extends StatelessWidget {
                       return null;
                     },
                   ),
+                  SizesForm(product),
                   RaisedButton(
                     onPressed: (){
                       if(formKey.currentState.validate()){
