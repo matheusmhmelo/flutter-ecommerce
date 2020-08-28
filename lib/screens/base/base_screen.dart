@@ -4,12 +4,16 @@ import 'package:loja_virtual/models/page_manager.dart';
 import 'package:loja_virtual/models/user_manager.dart';
 import 'package:loja_virtual/screens/admin_users/admin_users_screen.dart';
 import 'package:loja_virtual/screens/home/home_screen.dart';
-import 'package:loja_virtual/screens/login/login_screen.dart';
 import 'package:loja_virtual/screens/products/products_screen.dart';
 import 'package:provider/provider.dart';
 
-class BaseScreen extends StatelessWidget {
+class BaseScreen extends StatefulWidget {
 
+  @override
+  _BaseScreenState createState() => _BaseScreenState();
+}
+
+class _BaseScreenState extends State<BaseScreen> {
   final PageController pageController = PageController();
 
   @override

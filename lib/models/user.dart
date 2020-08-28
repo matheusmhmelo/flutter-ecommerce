@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:loja_virtual/models/address.dart';
 
 class User {
 
@@ -8,6 +9,10 @@ class User {
     id = document.documentID;
     name = document.data["name"] as String;
     email = document.data["email"] as String;
+    if(document.data.containsKey("address")){
+      address = Address.fromMap(
+          document.data["address"] as Map<String, dynamic>);
+    }
   }
 
   String id;
@@ -19,13 +24,15 @@ class User {
 
   bool admin = false;
 
+  Address address;
+
   DocumentReference get firestoreRef =>
     Firestore.instance.document('users/$id');
 
   CollectionReference get cartRef =>
     firestoreRef.collection('cart');
 
-  Future<void> saveData() async{
+  Future<void> saveData() async {
     await firestoreRef.setData(toMap());
   }
 
@@ -33,7 +40,14 @@ class User {
     return {
       "name": name,
       "email": email,
+      if(address != null)
+        "address": address.toMap(),
     };
+  }
+
+  Future<void> setAddress(Address address) async {
+    this.address = address;
+    saveData();
   }
 
 }

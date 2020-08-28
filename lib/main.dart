@@ -6,6 +6,7 @@ import 'package:loja_virtual/models/home_manager.dart';
 import 'package:loja_virtual/models/product.dart';
 import 'package:loja_virtual/models/product_manager.dart';
 import 'package:loja_virtual/models/user_manager.dart';
+import 'package:loja_virtual/screens/address/address_screen.dart';
 import 'package:loja_virtual/screens/base/base_screen.dart';
 import 'package:loja_virtual/screens/cart/cart_screen.dart';
 import 'package:loja_virtual/screens/edit_product/edit_product_screen.dart';
@@ -17,13 +18,6 @@ import 'package:provider/provider.dart';
 
 void main() async {
   runApp(MyApp());
-
-  Firestore.instance
-      .collection('pedidos').snapshots().listen((snapshot) {
-        for(DocumentSnapshot document in snapshot.documents) {
-          print(document.data);
-        }
-  });
 }
 
 class MyApp extends StatelessWidget {
@@ -87,6 +81,10 @@ class MyApp extends StatelessWidget {
             case '/cart':
               return MaterialPageRoute(
                   builder: (_) => CartScreen()
+              );
+            case '/address':
+              return MaterialPageRoute(
+                  builder: (_) => AddressScreen()
               );
             case '/edit_product':
               return MaterialPageRoute(

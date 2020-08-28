@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 class DrawerTile extends StatelessWidget {
 
-  DrawerTile({this.iconData, this.title, this.page});
+  const DrawerTile({this.iconData, this.title, this.page});
 
   final IconData iconData;
   final String title;

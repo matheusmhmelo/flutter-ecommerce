@@ -20,6 +20,7 @@ class CartProduct extends ChangeNotifier {
     firestore.document('products/$productId').get().then(
       (doc) {
         product = Product.fromDocument(doc);
+        notifyListeners();
       }
     );
   }
@@ -42,7 +43,7 @@ class CartProduct extends ChangeNotifier {
 
   num get unitPrice {
     if(product == null){
-      return null;
+      return 0;
     }
     return itemSize?.price ?? 0;
   }
