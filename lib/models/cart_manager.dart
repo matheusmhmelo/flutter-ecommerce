@@ -84,6 +84,14 @@ class CartManager extends ChangeNotifier {
     notifyListeners();
   }
 
+  void clear() {
+    for(final cartProduct in items) {
+      user.cartRef.document(cartProduct.id).delete();
+    }
+    items.clear();
+    notifyListeners();
+  }
+
   void _onItemUpdated(){
     productsPrice = 0.0;
 
@@ -185,8 +193,6 @@ class CartManager extends ChangeNotifier {
       await Geolocator().distanceBetween(latStore, longStore, lat, long);
 
     dis /= 1000.0;
-
-    debugPrint("$dis");
 
     if(dis > maxKm) {
       return false;
