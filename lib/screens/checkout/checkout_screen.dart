@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loja_virtual/common/price_card.dart';
 import 'package:loja_virtual/models/cart_manager.dart';
 import 'package:loja_virtual/models/checkout_manager.dart';
+import 'package:loja_virtual/models/page_manager.dart';
 import 'package:provider/provider.dart';
 
 class CheckoutScreen extends StatelessWidget {
@@ -27,11 +28,11 @@ class CheckoutScreen extends StatelessWidget {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: const [
                     CircularProgressIndicator(
                       valueColor: AlwaysStoppedAnimation(Colors.white),
                     ),
-                    const SizedBox(height: 16,),
+                    SizedBox(height: 16,),
                     Text(
                       "Processando seu pagamento...",
                       style: TextStyle(
@@ -55,9 +56,12 @@ class CheckoutScreen extends StatelessWidget {
                           (route) => route.settings.name == '/cart'
                         );
                       },
-                      onSuccess: (){
+                      onSuccess: (order){
                         Navigator.of(context).popUntil(
-                                (route) => route.settings.name == '/base'
+                          (route) => route.settings.name == '/base');
+                        Navigator.of(context).pushNamed(
+                          "/confirmation",
+                          arguments: order
                         );
                       }
                     );
