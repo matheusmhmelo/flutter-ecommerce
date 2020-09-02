@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loja_virtual/models/product.dart';
 import 'package:loja_virtual/models/product_manager.dart';
+import 'package:loja_virtual/screens/edit_product/components/remove_product_dialog.dart';
 import 'package:provider/provider.dart';
 
 import 'components/images_form.dart';
@@ -28,6 +29,18 @@ class EditProductScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text(editing ? "Editar Produto" : "Criar Produto"),
           centerTitle: true,
+          actions: [
+            if(editing)
+              IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: (){
+                  showDialog(
+                      context: context,
+                      builder: (_) => RemoveProductDialog(product)
+                  );
+                },
+              )
+          ],
         ),
         body: Form(
           key: formKey,

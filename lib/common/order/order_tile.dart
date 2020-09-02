@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loja_virtual/models/order.dart';
 
 import 'cancel_order_dialog.dart';
-import 'export_address_dialog.dart';
+import '../export_address_dialog.dart';
 import 'order_product_tile.dart';
 
 class OrderTile extends StatelessWidget {
