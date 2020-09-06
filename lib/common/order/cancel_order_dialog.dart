@@ -1,27 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:loja_virtual/models/order.dart';
 
-class CancelOrderDialog extends StatelessWidget {
+class CancelOrderDialog extends StatefulWidget {
 
   const CancelOrderDialog(this.order);
 
   final Order order;
 
   @override
+  _CancelOrderDialogState createState() => _CancelOrderDialogState();
+}
+
+class _CancelOrderDialogState extends State<CancelOrderDialog> {
+
+  bool loading = false;
+  String error;
+
+  @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text("Cancelar ${order.formatedId}?"),
-      content: const Text("Esta ação não poderá ser desfeita"),
-      actions: [
-        FlatButton(
-          onPressed: (){
-            order.cancel();
-            Navigator.of(context).pop();
-          },
-          textColor: Colors.red,
-          child: const Text("Cancelar pedido"),
-        )
-      ],
+    return WillPopScope(
+      onWillPop: () => Future.value(false),
+      child: AlertDialog(
+        title: Text("Cancelar ${widget.order.formatedId}?"),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+                loading
+                    ? "Cancelando..."
+                    : "Esta ação não poderá ser desfeita"
+            ),
+            if(error != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  error,
+                  style: const TextStyle(
+                    color: Colors.red
+                  ),
+                ),
+              )
+          ],
+        ),
+        actions: [
+          FlatButton(
+            onPressed: !loading ? (){
+              Navigator.of(context).pop();
+            } : null,
+            child: const Text("Voltar"),
+          ),
+          FlatButton(
+            onPressed: !loading ? () async {
+              setState(() {
+                loading = true;
+              });
+
+              try {
+                await widget.order.cancel();
+                Navigator.of(context).pop();
+              } catch(e) {
+                setState(() {
+                  loading = false;
+                  error = e.toString();
+                });
+              }
+            } : null,
+            textColor: Colors.red,
+            child: const Text("Cancelar pedido"),
+          )
+        ],
+      ),
     );
   }
 }

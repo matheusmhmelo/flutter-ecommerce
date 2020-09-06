@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:loja_virtual/common/price_card.dart';
 import 'package:loja_virtual/models/cart_manager.dart';
 import 'package:loja_virtual/models/checkout_manager.dart';
+import 'package:loja_virtual/models/credit_card.dart';
 import 'package:provider/provider.dart';
 
+import 'components/cpf_field.dart';
 import 'components/credit_card_widget.dart';
 
 class CheckoutScreen extends StatelessWidget {
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  final CreditCard creditCard = CreditCard();
 
   @override
   Widget build(BuildContext context) {
@@ -55,27 +59,38 @@ class CheckoutScreen extends StatelessWidget {
                 key: formKey,
                 child: ListView(
                   children: [
-                    CreditCardWidget(),
+                    CreditCardWidget(creditCard),
+                    CpfField(),
                     PriceCard(
                       buttonText: "Finalizar Pedido",
                       onPressed: (){
                         if(formKey.currentState.validate()) {
-                          print("enviado");
-//                        checkoutManager.checkout(
-//                            onStockFail: (e) {
-//                              Navigator.of(context).popUntil(
-//                                      (route) => route.settings.name == '/cart'
-//                              );
-//                            },
-//                            onSuccess: (order) {
-//                              Navigator.of(context).popUntil(
-//                                      (route) => route.settings.name == '/');
-//                              Navigator.of(context).pushNamed(
-//                                  "/confirmation",
-//                                  arguments: order
-//                              );
-//                            }
-//                        );
+                          formKey.currentState.save();
+
+                          checkoutManager.checkout(
+                            creditCard: creditCard,
+                            onStockFail: (e) {
+                              Navigator.of(context).popUntil(
+                                      (route) => route.settings.name == '/cart'
+                              );
+                            },
+                            onSuccess: (order) {
+                              Navigator.of(context).popUntil(
+                                      (route) => route.settings.name == '/');
+                              Navigator.of(context).pushNamed(
+                                  "/confirmation",
+                                  arguments: order
+                              );
+                            },
+                            onPayFail: (e){
+                              scaffoldKey.currentState.showSnackBar(
+                                SnackBar(
+                                  content: Text("$e"),
+                                  backgroundColor: Colors.red,
+                                )
+                              );
+                            }
+                          );
                         }
                       },
                     )
