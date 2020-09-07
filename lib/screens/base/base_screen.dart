@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:loja_virtual/common/custom_drawer/custom_drawer.dart';
@@ -27,6 +31,39 @@ class _BaseScreenState extends State<BaseScreen> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp
     ]);
+
+    configFCM();
+  }
+
+  void configFCM() {
+    final fcm = FirebaseMessaging();
+
+    if(Platform.isIOS){
+      fcm.requestNotificationPermissions(
+        const IosNotificationSettings(provisional: true)
+      );
+    }
+
+    fcm.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        showNotification(
+          message["notification"]["title"] as String,
+          message["notification"]["body"] as String,
+        );
+      }
+    );
+  }
+
+  void showNotification(String title, String message) {
+    Flushbar(
+      title: title,
+      message: message,
+      flushbarPosition: FlushbarPosition.TOP,
+      flushbarStyle: FlushbarStyle.GROUNDED,
+      isDismissible: true,
+      duration: const Duration(seconds: 5),
+      icon: const Icon(Icons.shopping_cart, color: Colors.white,),
+    ).show(context);
   }
 
   @override
